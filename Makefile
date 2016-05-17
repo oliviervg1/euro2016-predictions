@@ -7,6 +7,7 @@ env:
 clean:
 	- rm -rf env BUILD pip-repo
 	- rm app.zip
+	- rm src/euro2016.db
 	- find . -name "*.pyc" | xargs rm
 
 lint: env
