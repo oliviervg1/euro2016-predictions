@@ -1,0 +1,11 @@
+stacks:
+  - name: prediction-service
+    class_path: stacks.euro2016.PredictionService
+    parameters:
+      ELBSubnetIds: subnet-4d73bc3b,subnet-134faa4b,subnet-1803a77c
+      ELBSecurityGroups: sg-0e56f169
+      EC2SubnetIds: subnet-0c73bc7a,subnet-2a4faa72,subnet-8603a7e2
+      EC2SecurityGroups: sg-e356f184,sg-935ef9f4
+      KeyName: olivier.vangoethem
+      BaseAMI: ami-b0ac25c3
+      InstanceType: t2.micro
