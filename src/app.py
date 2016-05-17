@@ -1,11 +1,10 @@
-import datetime
-
 from football_data_client import FootballDataApiClient
 from google_oauth_client import GoogleOauth2Client
 
 from flask import Flask, session, jsonify, redirect, url_for
 from flask_oauth2_login import GoogleLogin
-from flask_sqlalchemy import SQLAlchemy
+
+from models import db, User
 
 app = Flask(__name__)
 app.config.update(
@@ -17,19 +16,10 @@ app.config.update(
 )
 
 google_login = GoogleLogin(app)
-db = SQLAlchemy(app)
+db.init_app(app)
 
 football_api_client = FootballDataApiClient(424)
 google_oauth2_client = GoogleOauth2Client()
-
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    name = db.Column(db.String(100), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
 
 
 @app.route("/status")
@@ -42,7 +32,20 @@ def index():
     access_token = session.get("access_token")
     if not google_oauth2_client.is_access_token_valid(access_token):
         return redirect(google_login.authorization_url())
-    return jsonify(session)
+    user = User.query.filter_by(email=session["user"]["email"]).first()
+    if not user:
+        return redirect(google_login.authorization_url())
+    return jsonify(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        predictions=user.predictions
+    )
+
+
+@app.route("/submit", methods=["POST"])
+def submit():
+    return redirect(url_for("index"))
 
 
 @google_login.login_success
@@ -63,5 +66,6 @@ def login_failure(e):
 
 
 if __name__ == '__main__':
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(port=8000, debug=True)
