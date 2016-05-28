@@ -1,4 +1,5 @@
-from flask import Flask, request, session, jsonify, redirect, url_for
+from flask import Flask, request, session, jsonify, redirect, url_for, \
+    render_template
 from flask_oauth2_login import GoogleLogin
 
 from football_data_client import FootballDataApiClient
@@ -34,8 +35,7 @@ def index():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(google_login.authorization_url())
-    return jsonify(user.to_json(), profile=session["user"])
-    # return render_template("index.html")
+    return render_template("index.html", user=user.to_json())
 
 
 @app.route("/submit", methods=["POST"])

@@ -1,4 +1,5 @@
 import datetime
+import urllib
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -42,7 +43,7 @@ class Team(db.Model):
     def to_json(self):
         return {
             "name": self.name,
-            "crest_url": self.crest_url
+            "crest_url": urllib.quote_plus(self.crest_url, safe="/:")
         }
 
 
