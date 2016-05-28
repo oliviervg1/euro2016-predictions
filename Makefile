@@ -15,7 +15,7 @@ lint: env
 
 run: env lint
 	# . env/bin/activate && cd src && gunicorn app:app
-	. env/bin/activate && python src/app.py
+	. env/bin/activate && cd src && python app.py
 
 package: clean
 	mkdir -p BUILD pip-repo

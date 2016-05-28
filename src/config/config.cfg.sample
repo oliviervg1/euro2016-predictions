@@ -1,0 +1,10 @@
+[flask]
+secret_key =
+
+[google_login]
+client_id =
+client_secret =
+redirect_scheme =
+
+[db]
+sqlalchemy_db_url =

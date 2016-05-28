@@ -1,25 +1,27 @@
-from football_data_client import FootballDataApiClient
-from google_oauth_client import GoogleOauth2Client
-
-from flask import Flask, session, jsonify, redirect, url_for
+from flask import Flask, request, session, jsonify, redirect, url_for
 from flask_oauth2_login import GoogleLogin
 
-from models import db, User
+from football_data_client import FootballDataApiClient
+
+from models import db
+from utils import get_config, is_user_logged_in, is_valid_email_domain, \
+    add_user, set_predictions
+
+config = get_config("./config/config.cfg")
 
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY="secret",
-    GOOGLE_LOGIN_REDIRECT_SCHEME="http",
-    GOOGLE_LOGIN_CLIENT_ID="1071286879712-h5ibu7s009v31lte976k7357190258b4.apps.googleusercontent.com",  # noqa
-    GOOGLE_LOGIN_CLIENT_SECRET="DuprXHx4cvd4asJx2oTEPbhI",
-    SQLALCHEMY_DATABASE_URI="sqlite:///euro2016.db"
+    SECRET_KEY=config.get("flask", "secret_key"),
+    GOOGLE_LOGIN_REDIRECT_SCHEME=config.get("google_login", "redirect_scheme"),
+    GOOGLE_LOGIN_CLIENT_ID=config.get("google_login", "client_id"),
+    GOOGLE_LOGIN_CLIENT_SECRET=config.get("google_login", "client_secret"),
+    SQLALCHEMY_DATABASE_URI=config.get("db", "sqlalchemy_db_url")
 )
 
 google_login = GoogleLogin(app)
 db.init_app(app)
 
 football_api_client = FootballDataApiClient(424)
-google_oauth2_client = GoogleOauth2Client()
 
 
 @app.route("/status")
@@ -29,34 +31,31 @@ def status():
 
 @app.route("/")
 def index():
-    access_token = session.get("access_token")
-    if not google_oauth2_client.is_access_token_valid(access_token):
-        return redirect(google_login.authorization_url())
-    user = User.query.filter_by(email=session["user"]["email"]).first()
-    if not user:
+    is_logged_in, user = is_user_logged_in(session)
+    if not is_logged_in:
         return redirect(google_login.authorization_url())
     return jsonify(
         id=user.id,
         name=user.name,
         email=user.email,
-        predictions=user.predictions
+        predictions=[str(p) for p in user.predictions]
     )
 
 
 @app.route("/submit", methods=["POST"])
 def submit():
+    is_logged_in, user = is_user_logged_in(session)
+    if not is_logged_in:
+        return redirect(google_login.authorization_url())
+    set_predictions(user, request.form)
     return redirect(url_for("index"))
 
 
 @google_login.login_success
 def login_success(token, profile):
-    session["access_token"] = token["access_token"]
-    user = User.query.filter_by(email=profile["email"]).first()
-    if user is None:
-        user = User(email=profile["email"], name=profile["name"])
-        db.session.add(user)
-        db.session.commit()
-    session["user"] = profile
+    if not is_valid_email_domain(profile["email"]):
+        return jsonify(error="Please use a Cloudreach email address!")
+    add_user(session, token, profile)
     return redirect(url_for("index"))
 
 
