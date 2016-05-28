@@ -59,15 +59,16 @@ def submit():
 
 @google_login.login_success
 def login_success(token, profile):
-    if not is_valid_email_domain(profile["hd"]):
-        return jsonify(error="Please use a Cloudreach email address!")
+    whitelisted_domains = config.get("google_login", "whitelisted_domains")
+    if not is_valid_email_domain(profile["hd"], whitelisted_domains):
+        return jsonify(error="Please use a valid email address!")
     add_user(session, token, profile)
     return redirect(url_for("index"))
 
 
 @google_login.login_failure
-def login_failure(e):
-    return jsonify(error=str(e)), 500
+def login_failure(error):
+    return error(error)
 
 
 if __name__ == '__main__':

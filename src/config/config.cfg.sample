@@ -5,6 +5,7 @@ secret_key =
 api_key =
 
 [google_login]
+whitelisted_domains =
 client_id =
 client_secret =
 redirect_scheme =

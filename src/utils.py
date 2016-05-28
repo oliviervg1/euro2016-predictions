@@ -24,10 +24,11 @@ def is_user_logged_in(session):
     return True, user
 
 
-def is_valid_email_domain(domain_name):
-    if domain_name not in ["cloudreach.com", "cloudreach.co.uk"]:
-        return False
-    return True
+def is_valid_email_domain(domain_name, whitelisted_domains):
+    allowed_domains = whitelisted_domains.split(",")
+    if domain_name in allowed_domains or "_all_" in allowed_domains:
+        return True
+    return False
 
 
 def allocate_team():
