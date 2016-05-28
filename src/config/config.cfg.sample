@@ -1,6 +1,9 @@
 [flask]
 secret_key =
 
+[football_data]
+api_key =
+
 [google_login]
 client_id =
 client_secret =

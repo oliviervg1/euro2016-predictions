@@ -22,12 +22,19 @@ app.config.update(
 google_login = GoogleLogin(app)
 db.init_app(app)
 
-football_api_client = FootballDataApiClient(424)
+football_api_client = FootballDataApiClient(
+    config.get("football_data", "api_key"), 424
+)
 
 
 @app.route("/status")
 def status():
     return jsonify(response="OK")
+
+
+@app.errorhandler(Exception)
+def error(error):
+    return jsonify(error=str(error)), 500
 
 
 @app.route("/")
@@ -57,7 +64,7 @@ def login_success(token, profile):
 
 @google_login.login_failure
 def login_failure(e):
-    return jsonify(error=str(e))
+    return jsonify(error=str(e)), 500
 
 
 if __name__ == '__main__':
