@@ -16,7 +16,9 @@ class User(db.Model):
     allocated_team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
 
     allocated_team = db.relationship("Team")
-    predictions = db.relationship("Prediction")
+    predictions = db.relationship(
+        "Prediction", cascade="delete, delete-orphan"
+    )
 
     def to_json(self):
         return {
