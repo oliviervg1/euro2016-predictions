@@ -38,6 +38,10 @@ body {
     margin-right: 10px;
 }
 
+.form-group-width {
+    min-width: 100%;
+}
+
 .form-width {
     width: 80px !important;
 }
