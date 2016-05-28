@@ -17,6 +17,18 @@ class User(db.Model):
     allocated_team = db.relationship("Team")
     predictions = db.relationship("Prediction")
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "joined_date": self.created_at,
+            "allocated_team": self.allocated_team.to_json(),
+            "predictions": [
+                prediction.to_json() for prediction in self.predictions
+            ]
+        }
+
 
 class Team(db.Model):
     __tablename__ = "teams"
@@ -26,8 +38,10 @@ class Team(db.Model):
 
     allocated_users = db.relationship("User", back_populates="allocated_team")
 
-    def __repr__(self):
-        return self.name
+    def to_json(self):
+        return {
+            "name": self.name
+        }
 
 
 class Prediction(db.Model):
@@ -42,10 +56,10 @@ class Prediction(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="predictions")
 
-    def __repr__(self):
-        return "{home_team} {home_score}-{away_score} {away_team}".format(
-            home_team=self.home_team,
-            home_score=self.home_score,
-            away_score=self.away_score,
-            away_team=self.away_team
-        )
+    def to_json(self):
+        return {
+            "home_team": self.home_team,
+            "home_score": self.home_score,
+            "away_score": self.away_score,
+            "away_team": self.away_team
+        }

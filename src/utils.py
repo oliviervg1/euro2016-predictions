@@ -24,11 +24,10 @@ def is_user_logged_in(session):
     return True, user
 
 
-def is_valid_email_domain(email):
-    domain_name = email.split("@")[-1]
+def is_valid_email_domain(domain_name):
     if domain_name not in ["cloudreach.com", "cloudreach.co.uk"]:
         return False
-    return email
+    return True
 
 
 def allocate_team():
