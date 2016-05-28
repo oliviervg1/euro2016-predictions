@@ -35,12 +35,14 @@ class Team(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+    crest_url = db.Column(db.String(100), nullable=False)
 
     allocated_users = db.relationship("User", back_populates="allocated_team")
 
     def to_json(self):
         return {
-            "name": self.name
+            "name": self.name,
+            "crest_url": self.crest_url
         }
 
 

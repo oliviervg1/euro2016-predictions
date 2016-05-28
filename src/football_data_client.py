@@ -13,7 +13,7 @@ class FootballDataApiClient(object):
                 self.base_endpoint, self.soccer_season_id
             )
         ).json()
-        return [team["name"] for team in response["teams"]]
+        return [(team["name"], team["crestUrl"]) for team in response["teams"]]
 
     def get_all_fixtures(self):
         return requests.get(

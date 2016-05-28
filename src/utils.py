@@ -76,9 +76,10 @@ def set_predictions(user, form_predictions):
 
 def populate_teams_table(teams):
     db_teams = []
-    for team in teams:
+    for team, crest_url in teams:
         db_teams.append(Team(
-            name=team
+            name=team,
+            crest_url=crest_url
         ))
     db.session.add_all(db_teams)
     try:

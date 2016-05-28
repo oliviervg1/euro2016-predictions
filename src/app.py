@@ -35,6 +35,7 @@ def index():
     if not is_logged_in:
         return redirect(google_login.authorization_url())
     return jsonify(user.to_json(), profile=session["user"])
+    # return render_template("index.html")
 
 
 @app.route("/submit", methods=["POST"])
