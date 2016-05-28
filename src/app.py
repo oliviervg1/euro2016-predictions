@@ -5,7 +5,7 @@ from football_data_client import FootballDataApiClient
 
 from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
-    add_user, set_predictions
+    add_user, set_predictions, populate_teams_table
 
 config = get_config("./config/config.cfg")
 
@@ -38,6 +38,7 @@ def index():
         id=user.id,
         name=user.name,
         email=user.email,
+        allocated_team=str(user.allocated_team),
         predictions=[str(p) for p in user.predictions]
     )
 
@@ -67,4 +68,5 @@ def login_failure(e):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        populate_teams_table(football_api_client.get_all_teams())
     app.run(port=8000, debug=True)

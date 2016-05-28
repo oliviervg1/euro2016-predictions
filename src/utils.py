@@ -1,8 +1,10 @@
+import random
+
 from ConfigParser import SafeConfigParser
 
 from google_oauth_client import GoogleOauth2Client
 
-from models import db, User, Prediction
+from models import db, User, Prediction, Team
 
 
 def get_config(config_path):
@@ -29,11 +31,24 @@ def is_valid_email_domain(email):
     return email
 
 
+def allocate_team():
+    teams = Team.query.all()
+    unallocated_teams = []
+    i = 0
+    while unallocated_teams == []:
+        unallocated_teams = [
+            team for team in teams if len(team.allocated_users) <= i
+        ]
+        i += 1
+    return random.choice(unallocated_teams)
+
+
 def add_user(session, token, profile):
     session["access_token"] = token["access_token"]
     user = User.query.filter_by(email=profile["email"]).first()
     if user is None:
         user = User(email=profile["email"], name=profile["name"])
+        user.allocated_team = allocate_team()
         db.session.add(user)
         db.session.commit()
     session["user"] = profile
@@ -58,3 +73,16 @@ def set_predictions(user, form_predictions):
     user.predictions = predictions
     db.session.commit()
     return True
+
+
+def populate_teams_table(teams):
+    db_teams = []
+    for team in teams:
+        db_teams.append(Team(
+            name=team
+        ))
+    db.session.add_all(db_teams)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
