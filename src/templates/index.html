@@ -64,7 +64,7 @@
 
         <hr>
 
-        <form class="form-inline">
+        <form class="form-inline" action="{{ url_for("submit") }}" method="post">
             {% for fixture in fixtures %}
             {% set game = fixture.homeTeamName + '_' + fixture.awayTeamName %}
             <div class="row">
@@ -78,14 +78,14 @@
                         </div>
                         <div class="col-sm-2">
                             <input type="hidden" name="home_team_{{ loop.index }}" value="{{ fixture.homeTeamName }}">
-                            <input type="number" min="0" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions[game] }}">
+                            <input type="number" min="0" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions[game].home_score }}">
                         </div>
                         <div class="col-sm-1">
                             <p>-</p>
                         </div>
                         <div class="col-sm-2">
                             <input type="hidden" name="away_team_{{ loop.index }}" value="{{ fixture.awayTeamName }}">
-                            <input type="number" min="0" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions[game] }}">
+                            <input type="number" min="0" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions[game].away_score }}">
                         </div>
                         <div class="col-sm-2">
                             <label for="away_team_{{ loop.index }}">{{ fixture.awayTeamName }}</label>
