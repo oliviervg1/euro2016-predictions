@@ -71,7 +71,7 @@
                 <div class="col-sm-11">
                     <div class="form-group form-group-width">
                         <div class="col-sm-2">
-                            <p>{{ fixture.date }}</p>
+                            <p>{{ fixture.date|strftime }}</p>
                         </div>
                         <div class="col-sm-2">
                             <label for="home_team_{{ loop.index }}">{{ fixture.homeTeamName }}</label>

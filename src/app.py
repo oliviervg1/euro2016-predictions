@@ -1,3 +1,5 @@
+from dateutil.parser import parse as parse_date
+
 from flask import Flask, request, session, jsonify, redirect, url_for, \
     render_template
 from flask_oauth2_login import GoogleLogin
@@ -27,14 +29,20 @@ football_api_client = FootballDataApiClient(
 )
 
 
-@app.route("/status")
-def status():
-    return jsonify(response="OK")
+@app.template_filter("strftime")
+def filter_datetime(date_time):
+    date_time_object = parse_date(date_time)
+    return date_time_object.strftime("%a %d %B %Y - %H:%M UTC")
 
 
 @app.errorhandler(Exception)
 def error(error):
     return jsonify(error=str(error)), 500
+
+
+@app.route("/status")
+def status():
+    return jsonify(response="OK")
 
 
 @app.route("/")
