@@ -38,6 +38,14 @@ body {
     margin-right: 10px;
 }
 
+.form-width {
+    width: 80px !important;
+}
+
+.text-margin-bottom {
+    margin-bottom: 30px;
+}
+
 footer {
     margin: 50px 0;
 }

@@ -59,20 +59,28 @@
         <hr>
 
         <div class="row">
-            <div class="col-sm-4">
-                <img class="img-circle img-responsive img-center" src="http://placehold.it/300x300" alt="">
-                <h2>Marketing Box #1</h2>
-                <p>These marketing boxes are a great place to put some information. These can contain summaries of what the company does, promotional information, or anything else that is relevant to the company. These will usually be below-the-fold.</p>
+            <div class="col-sm-12">
+                <h1 class="text-margin-bottom">Your predictions:</h1>
             </div>
-            <div class="col-sm-4">
-                <img class="img-circle img-responsive img-center" src="http://placehold.it/300x300" alt="">
-                <h2>Marketing Box #2</h2>
-                <p>The images are set to be circular and responsive. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
-            </div>
-            <div class="col-sm-4">
-                <img class="img-circle img-responsive img-center" src="http://placehold.it/300x300" alt="">
-                <h2>Marketing Box #3</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="form-inline">
+                    {% for fixture in fixtures %}
+                    {% set game = fixture.homeTeamName + '_' + fixture.awayTeamName %}
+                    <div class="form-group">
+                        <label for="home_team_{{ loop.index }}">{{ fixture.homeTeamName }}</label>
+                        <input type="hidden" name="home_team_{{ loop.index }}" value="{{ fixture.homeTeamName }}">
+                        <input type="number" min="0" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions[game] }}">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="away_team_{{ loop.index }}" value="{{ fixture.awayTeamName }}">
+                        <input type="number" min="0" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions[game] }}">
+                        <label for="away_team_{{ loop.index }}">{{ fixture.awayTeamName }}</label>
+                    </div>
+                    {% endfor %}
+                </form>
             </div>
         </div>
         <!-- /.row -->

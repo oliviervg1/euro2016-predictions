@@ -25,9 +25,10 @@ class User(db.Model):
             "email": self.email,
             "joined_date": self.created_at,
             "allocated_team": self.allocated_team.to_json(),
-            "predictions": [
-                prediction.to_json() for prediction in self.predictions
-            ]
+            "predictions": {
+                prediction.get_key(): prediction.get_value()
+                for prediction in self.predictions
+            }
         }
 
 
@@ -59,10 +60,11 @@ class Prediction(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="predictions")
 
-    def to_json(self):
+    def get_key(self):
+        return "{0}_{1}".format(self.home_team, self.away_team)
+
+    def get_value(self):
         return {
-            "home_team": self.home_team,
             "home_score": self.home_score,
-            "away_score": self.away_score,
-            "away_team": self.away_team
+            "away_score": self.away_score
         }

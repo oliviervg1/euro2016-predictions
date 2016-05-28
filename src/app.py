@@ -42,7 +42,10 @@ def index():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(google_login.authorization_url())
-    return render_template("index.html", user=user.to_json())
+    fixtures = football_api_client.get_all_fixtures()
+    return render_template(
+        "index.html", user=user.to_json(), fixtures=fixtures
+    )
 
 
 @app.route("/submit", methods=["POST"])
