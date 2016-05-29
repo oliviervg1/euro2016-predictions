@@ -1,8 +1,10 @@
 from troposphere import Ref, Base64, Join
 from troposphere.iam import Role, PolicyProperty, InstanceProfile
-from troposphere.autoscaling import Tag
+from troposphere.ec2 import Tag
+from troposphere.autoscaling import Tag as AsgTag
 from troposphere.autoscaling import AutoScalingGroup
 from troposphere.autoscaling import LaunchConfiguration
+from troposphere.elasticloadbalancing import LoadBalancer, HealthCheck
 from troposphere.policies import UpdatePolicy, AutoScalingRollingUpdate
 
 from awacs.aws import Policy, Statement, Principal, Action
@@ -46,6 +48,32 @@ class PredictionService(Blueprint):
             "description": "Version of prediction service"
         }
     }
+
+    def create_prediction_service_elb(self):
+        t = self.template
+
+        prediction_service_elastic_load_balancer = t.add_resource(LoadBalancer(
+            "Euro2016ElasticLoadBalancer",
+            LoadBalancerName="euro2016-prediction-service-elb",
+            Subnets=Ref("ELBSubnetIds"),
+            Listeners=[{
+                "InstancePort": "8000",
+                "LoadBalancerPort": "80",
+                "Protocol": "HTTP"
+            }],
+            SecurityGroups=Ref("ELBSecurityGroups"),
+            HealthCheck=HealthCheck(
+                HealthyThreshold="3",
+                Interval="30",
+                Target="HTTP:8000/",
+                Timeout="5",
+                UnhealthyThreshold="5",
+            ),
+            CrossZone=True,
+            Tags=[Tag("Name", "euro2016-prediction-service-elb")]
+        ))
+
+        return prediction_service_elastic_load_balancer
 
     def create_prediction_service_instance_profile(self):
         t = self.template
@@ -92,7 +120,7 @@ class PredictionService(Blueprint):
         return prediction_service_instance_profile
 
     def create_prediction_service_autoscaling_group(
-            self, prediction_service_instance_profile
+            self, prediction_service_elb, prediction_service_instance_profile
     ):
         t = self.template
 
@@ -130,13 +158,14 @@ class PredictionService(Blueprint):
         t.add_resource(AutoScalingGroup(
             "Euro2016AutoscalingGroup",
             Tags=[
-                Tag("Name", "euro2016-prediction-service", True),
+                AsgTag("Name", "euro2016-prediction-service", True),
             ],
             LaunchConfigurationName=Ref(
                 prediction_service_launch_configuration
             ),
             MinSize="1",
             MaxSize="1",
+            LoadBalancerNames=[Ref(prediction_service_elb)],
             VPCZoneIdentifier=Ref("EC2SubnetIds"),
             UpdatePolicy=UpdatePolicy(
                 AutoScalingRollingUpdate=AutoScalingRollingUpdate(
@@ -148,5 +177,6 @@ class PredictionService(Blueprint):
         ))
 
     def create_template(self):
+        elb = self.create_prediction_service_elb()
         instance_profile = self.create_prediction_service_instance_profile()
-        self.create_prediction_service_autoscaling_group(instance_profile)
+        self.create_prediction_service_autoscaling_group(elb, instance_profile)
