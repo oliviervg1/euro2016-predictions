@@ -1,5 +1,7 @@
 .PHONY: clean lint run package upload cloudformation
 
+export GIT_HASH=$(shell git log -1 --format="%H")
+
 env:
 	virtualenv env
 	. env/bin/activate && pip install -r requirements.txt -r requirements-dev.txt
@@ -27,8 +29,8 @@ package: clean
 	mv BUILD/app.zip .
 
 upload: package
-	aws s3 cp app.zip s3://oliviervg1-code/euro2016/app.zip
+	aws s3 cp app.zip s3://oliviervg1-code/euro2016/app-$$GIT_HASH.zip
 
 cloudformation: env lint
 	cp -r stackerformation/stacks env/lib/python2.7/site-packages/
-	. env/bin/activate && stacker build -r eu-west-1 stackerformation/conf/euro2016.env stackerformation/conf/euro2016.yaml
+	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH stackerformation/conf/euro2016.env stackerformation/conf/euro2016.yaml

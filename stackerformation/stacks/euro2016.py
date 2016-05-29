@@ -40,6 +40,10 @@ class PredictionService(Blueprint):
         "InstanceType": {
             "type": "String",
             "description": "EC2 instance size to use for prediction_service"
+        },
+        "AppVersion": {
+            "type": "String",
+            "description": "Version of prediction service"
         }
     }
 
@@ -47,7 +51,7 @@ class PredictionService(Blueprint):
         t = self.template
 
         prediction_service_iam_policy = PolicyProperty(
-            PolicyName="prediction-service-policy",
+            PolicyName="euro2016-prediction-service-policy",
             PolicyDocument=Policy(
                 Statement=[
                     Statement(
@@ -65,7 +69,7 @@ class PredictionService(Blueprint):
         )
 
         prediction_service_iam_role = t.add_resource(Role(
-            "ProvisionerIamRole",
+            "Euro2016IamRole",
             AssumeRolePolicyDocument=Policy(
                 Statement=[Statement(
                     Effect="Allow",
@@ -80,7 +84,7 @@ class PredictionService(Blueprint):
         ))
 
         prediction_service_instance_profile = t.add_resource(InstanceProfile(
-            "ProvisionerInstanceProfile",
+            "Euro2016InstanceProfile",
             Roles=[Ref(prediction_service_iam_role)],
             Path="/"
         ))
@@ -94,15 +98,16 @@ class PredictionService(Blueprint):
 
         prediction_service_launch_configuration = t.add_resource(
             LaunchConfiguration(
-                "ProvisionerLaunchConfiguration",
-                UserData=Base64("""\
-#!/bin/bash -ex
-yum clean all
-yum update -y
-mkdir -p /opt/euro2016
-aws s3 cp s3://oliviervg1-code/euro2016/app.zip /tmp/app.zip
-unzip /tmp/app.zip -d /opt/euro2016/
-"""),
+                "Euro2016LaunchConfiguration",
+                UserData=Base64(Join("", [
+                    "#!/bin/bash -ex\n",
+                    "yum clean all\n",
+                    "yum update -y\n",
+                    "mkdir -p /opt/euro2016\n",
+                    "aws s3 cp s3://oliviervg1-code/euro2016/app-", Ref("AppVersion"), ".zip /tmp/app.zip\n",
+                    "unzip /tmp/app.zip -d /opt/euro2016/\n",
+                    "cd /opt/euro2016\n"
+                ])),
                 ImageId=Ref("BaseAMI"),
                 KeyName=Ref("KeyName"),
                 SecurityGroups=Ref("EC2SecurityGroups"),
@@ -113,7 +118,7 @@ unzip /tmp/app.zip -d /opt/euro2016/
         )
 
         t.add_resource(AutoScalingGroup(
-            "ProvisionerAutoscalingGroup",
+            "Euro2016AutoscalingGroup",
             Tags=[
                 Tag("Name", "euro2016-prediction-service", True),
             ],
