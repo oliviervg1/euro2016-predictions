@@ -37,11 +37,15 @@ class PredictionService(Blueprint):
         },
         "BaseAMI": {
             "type": "String",
-            "description": "Base AMI to use for prediction_service"
+            "description": "Base AMI to use for prediction service"
         },
         "InstanceType": {
             "type": "String",
-            "description": "EC2 instance size to use for prediction_service"
+            "description": "EC2 instance size to use for prediction service"
+        },
+        "SSLCertificateId": {
+            "type": "String",
+            "description": "The ARN of the SSL certificate to use."
         },
         "AppVersion": {
             "type": "String",
@@ -77,11 +81,19 @@ class PredictionService(Blueprint):
             "Euro2016ElasticLoadBalancer",
             LoadBalancerName="euro2016-prediction-service-elb",
             Subnets=Ref("ELBSubnetIds"),
-            Listeners=[{
-                "InstancePort": "8000",
-                "LoadBalancerPort": "80",
-                "Protocol": "HTTP"
-            }],
+            Listeners=[
+                {
+                    "InstancePort": "8000",
+                    "LoadBalancerPort": "80",
+                    "Protocol": "HTTP"
+                },
+                {
+                    "InstancePort": "8000",
+                    "LoadBalancerPort": "443",
+                    "Protocol": "HTTPS",
+                    "SSLCertificateId": Ref("SSLCertificateId")
+                }
+            ],
             SecurityGroups=Ref("ELBSecurityGroups"),
             HealthCheck=HealthCheck(
                 HealthyThreshold="3",
