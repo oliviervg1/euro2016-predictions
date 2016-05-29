@@ -162,8 +162,8 @@ class PredictionService(Blueprint):
 
                     "# Install dependencies\n",
                     "cd /opt/euro2016\n",
+                    "yum install -y nginx gcc mysql-devel\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
-                    "yum install -y nginx\n",
                     "cp config/nginx.conf /etc/nginx/nginx.conf\n",
                     "service nginx restart\n",
 

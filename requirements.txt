@@ -1,6 +1,7 @@
 flask
 flask-oauth2-login
 flask-sqlalchemy
+mysqlclient
 gunicorn
 requests
 python-dateutil
