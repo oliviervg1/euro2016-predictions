@@ -23,7 +23,7 @@ package: clean
 	mkdir -p BUILD pip-repo
 	virtualenv env
 	. env/bin/activate && pip download -r requirements.txt -d pip-repo
-	cp -r src BUILD/
+	cp -r src/* BUILD/
 	cp -r pip-repo BUILD/
 	cp requirements.txt BUILD/
 	cd BUILD; zip -r -X app.zip .

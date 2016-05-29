@@ -101,6 +101,7 @@ class PredictionService(Blueprint):
                 "Euro2016LaunchConfiguration",
                 UserData=Base64(Join("", [
                     "#!/bin/bash -ex\n",
+
                     "# Update system\n",
                     "yum clean all\n",
                     "yum update -y\n",
@@ -112,12 +113,9 @@ class PredictionService(Blueprint):
 
                     "# Install dependencies\n",
                     "cd /opt/euro2016\n",
-                    "virtualenv env\n",
-                    ". env/bin/activate\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
 
                     "# Start application\n",
-                    "cd src\n",
                     "gunicorn app:app &"
                 ])),
                 ImageId=Ref("BaseAMI"),
