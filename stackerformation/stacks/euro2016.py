@@ -114,7 +114,7 @@ class PredictionService(Blueprint):
                     "cd /opt/euro2016\n",
                     "virtualenv env\n",
                     ". env/bin/activate\n",
-                    "pip install --no-index --find-links pip-repo/ -r requirements.txt\n",  # noqa
+                    "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
 
                     "# Start application\n",
                     "cd src\n",
