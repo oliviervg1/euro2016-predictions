@@ -116,7 +116,7 @@ class PredictionService(Blueprint):
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
 
                     "# Start application\n",
-                    "gunicorn app:app &"
+                    "/usr/local/bin/gunicorn app:app &"
                 ])),
                 ImageId=Ref("BaseAMI"),
                 KeyName=Ref("KeyName"),
