@@ -1,4 +1,15 @@
 stacks:
+  - name: prediction-service-db
+    class_path: stacks.euro2016_db.PredictionServiceDB
+    parameters:
+      DBSubnetIds: subnet-9d9e4feb,subnet-4e698416,subnet-1b45e97f
+      DBSecurityGroups: sg-a10dbac6
+      DBName: euro2016
+      DBUser: euro2016
+      DBPassword:
+      DBInstanceClass: db.t2.micro
+      DBSize: 20
+
   - name: prediction-service
     class_path: stacks.euro2016.PredictionService
     parameters:
@@ -10,3 +21,5 @@ stacks:
       BaseAMI: ami-b0ac25c3
       InstanceType: t2.micro
       AppVersion:
+      DBAddress: prediction-service-db::DBAddress
+      DBPort: prediction-service-db::DBPort
