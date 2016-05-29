@@ -1,4 +1,4 @@
-from troposphere import Ref, Base64
+from troposphere import Ref, Base64, Join
 from troposphere.iam import Role, PolicyProperty, InstanceProfile
 from troposphere.autoscaling import Tag
 from troposphere.autoscaling import AutoScalingGroup
@@ -104,7 +104,7 @@ class PredictionService(Blueprint):
                     "yum clean all\n",
                     "yum update -y\n",
                     "mkdir -p /opt/euro2016\n",
-                    "aws s3 cp s3://oliviervg1-code/euro2016/app-", Ref("AppVersion"), ".zip /tmp/app.zip\n",
+                    "aws s3 cp s3://oliviervg1-code/euro2016/app-", Ref("AppVersion"), ".zip /tmp/app.zip\n",  # noqa
                     "unzip /tmp/app.zip -d /opt/euro2016/\n",
                     "cd /opt/euro2016\n"
                 ])),
