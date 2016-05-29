@@ -101,13 +101,22 @@ class PredictionService(Blueprint):
                 "Euro2016LaunchConfiguration",
                 UserData=Base64(Join("", [
                     "#!/bin/bash -ex\n",
+                    "# Update system\n",
                     "yum clean all\n",
                     "yum update -y\n",
+
+                    "# Fetch application\n",
                     "mkdir -p /opt/euro2016\n",
                     "aws s3 cp s3://oliviervg1-code/euro2016/app-", Ref("AppVersion"), ".zip /tmp/app.zip\n",  # noqa
                     "unzip /tmp/app.zip -d /opt/euro2016/\n",
+
+                    "# Install dependencies\n",
                     "cd /opt/euro2016\n",
+                    "virtualenv env\n",
+                    ". env/bin/activate\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt\n",  # noqa
+
+                    "# Start application\n",
                     "cd src\n",
                     "gunicorn app:app &"
                 ])),
