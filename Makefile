@@ -25,12 +25,13 @@ package: clean
 	. env/bin/activate && pip download -r requirements.txt -d pip-repo
 	cp -r src BUILD/
 	cp -r pip-repo BUILD/
+	cp requirements.txt BUILD/
 	cd BUILD; zip -r -X app.zip .
 	mv BUILD/app.zip .
 
 upload: package
 	aws s3 cp app.zip s3://oliviervg1-code/euro2016/app-$$GIT_HASH.zip
 
-cloudformation: env lint
+cloudformation: clean env lint
 	cp -r stackerformation/stacks env/lib/python2.7/site-packages/
 	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH stackerformation/conf/euro2016.env stackerformation/conf/euro2016.yaml
