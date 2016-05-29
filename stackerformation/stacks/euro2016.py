@@ -43,9 +43,13 @@ class PredictionService(Blueprint):
             "type": "String",
             "description": "EC2 instance size to use for prediction service"
         },
+        "DomainName": {
+            "type": "String",
+            "description": "The domain name the app is running on"
+        },
         "SSLCertificateId": {
             "type": "String",
-            "description": "The ARN of the SSL certificate to use."
+            "description": "The ARN of the SSL certificate to use"
         },
         "AppVersion": {
             "type": "String",
@@ -176,6 +180,7 @@ class PredictionService(Blueprint):
                     "cd /opt/euro2016\n",
                     "yum install -y nginx gcc mysql-devel\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
+                    "sed -i.bak -e 's|CHANGE_ME_DOMAIN_NAME|", Ref("DomainName"), "|' config/nginx.conf\n"
                     "cp config/nginx.conf /etc/nginx/nginx.conf\n",
                     "service nginx restart\n",
 
