@@ -18,6 +18,7 @@ app.config.update(
     GOOGLE_LOGIN_REDIRECT_SCHEME=config.get("google_login", "redirect_scheme"),
     GOOGLE_LOGIN_CLIENT_ID=config.get("google_login", "client_id"),
     GOOGLE_LOGIN_CLIENT_SECRET=config.get("google_login", "client_secret"),
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_DATABASE_URI=config.get("db", "sqlalchemy_db_url")
 )
 
