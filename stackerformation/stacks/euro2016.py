@@ -168,7 +168,7 @@ class PredictionService(Blueprint):
                     "service nginx restart\n",
 
                     "# Update config\n",
-                    "sed -i.bak -e 's|sqlite:///euro2016.db|mysql://", Ref("DBUser"), ":", Ref("DBPassword"), "@", Ref("DBAddress"), ":", Ref("DBPort"), "/", Ref("DBName"), "| config/config.cfg'\n",  # noqa
+                    "sed -i.bak -e 's|sqlite:///euro2016.db|mysql://", Ref("DBUser"), ":", Ref("DBPassword"), "@", Ref("DBAddress"), ":", Ref("DBPort"), "/", Ref("DBName"), "|' config/config.cfg\n",  # noqa
 
                     "# Start application\n",
                     "/usr/local/bin/gunicorn -c config/gunicorn.py app:app"
