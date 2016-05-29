@@ -65,7 +65,7 @@ class PredictionService(Blueprint):
             HealthCheck=HealthCheck(
                 HealthyThreshold="3",
                 Interval="30",
-                Target="HTTP:8000/",
+                Target="HTTP:8000/status",
                 Timeout="5",
                 UnhealthyThreshold="5",
             ),
@@ -142,9 +142,12 @@ class PredictionService(Blueprint):
                     "# Install dependencies\n",
                     "cd /opt/euro2016\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
+                    "yum install -y nginx\n",
+                    "cp config/nginx.conf /etc/nginx/nginx.conf\n",
+                    "service nginx restart\n",
 
                     "# Start application\n",
-                    "/usr/local/bin/gunicorn app:app &"
+                    "/usr/local/bin/gunicorn -c config/gunicorn.py app:app"
                 ])),
                 ImageId=Ref("BaseAMI"),
                 KeyName=Ref("KeyName"),
