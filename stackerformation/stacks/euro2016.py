@@ -46,6 +46,27 @@ class PredictionService(Blueprint):
         "AppVersion": {
             "type": "String",
             "description": "Version of prediction service"
+        },
+        "DBName": {
+            "type": "String",
+            "description": "DB name"
+        },
+        "DBUser": {
+            "type": "String",
+            "description": "DB user"
+        },
+        "DBPassword": {
+            "type": "String",
+            "description": "DB password",
+            "no_echo": True
+        },
+        "DBAddress": {
+            "type": "String",
+            "description": "DB address"
+        },
+        "DBPort": {
+            "type": "String",
+            "description": "DB port"
         }
     }
 
@@ -145,6 +166,9 @@ class PredictionService(Blueprint):
                     "yum install -y nginx\n",
                     "cp config/nginx.conf /etc/nginx/nginx.conf\n",
                     "service nginx restart\n",
+
+                    "# Update config\n",
+                    "sed -i.bak -e 's|sqlite:///euro2016.db|mysql://", Ref("DBUser"), ":", Ref("DBPassword"), "@", Ref("DBAddress"), ":", Ref("DBPort"), "/", Ref("DBName"), "| config/config.cfg'\n",  # noqa
 
                     "# Start application\n",
                     "/usr/local/bin/gunicorn -c config/gunicorn.py app:app"
