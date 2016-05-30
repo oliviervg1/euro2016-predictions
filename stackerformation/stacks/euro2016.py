@@ -180,7 +180,7 @@ class PredictionService(Blueprint):
                     "cd /opt/euro2016\n",
                     "yum install -y nginx gcc mysql-devel\n",
                     "pip install --no-index --find-links pip-repo/ -r requirements.txt --upgrade\n",  # noqa
-                    "sed -i.bak -e 's|CHANGE_ME_DOMAIN_NAME|", Ref("DomainName"), "|' config/nginx.conf\n"
+                    "sed -i.bak -e 's|CHANGE_ME_DOMAIN_NAME|", Ref("DomainName"), "|' config/nginx.conf\n"  # noqa
                     "cp config/nginx.conf /etc/nginx/nginx.conf\n",
                     "service nginx restart\n",
 

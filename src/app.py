@@ -81,6 +81,7 @@ def login_failure(error):
 
 
 if __name__ == '__main__':
+    google_login.redirect_scheme = "http"
     with app.app_context():
         db.create_all()
         populate_teams_table(football_api_client.get_all_teams())
