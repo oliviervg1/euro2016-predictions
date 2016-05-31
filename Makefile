@@ -13,7 +13,7 @@ clean:
 	- find . -name "*.pyc" | xargs rm
 
 lint: env
-	. env/bin/activate && flake8 src/ tests/ stackerformation/
+	. env/bin/activate && flake8 src/ stackerformation/
 
 run: env lint
 	# . env/bin/activate && cd src && gunicorn app:app
