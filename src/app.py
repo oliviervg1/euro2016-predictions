@@ -48,14 +48,19 @@ def status():
 
 @app.route("/")
 def index():
-    return jsonify(response="OK")
+    is_logged_in, user = is_user_logged_in(session)
+    if is_logged_in:
+        return redirect(url_for("my_predictions"))
+    return render_template(
+        "index.html", google_login_url=google_login.authorization_url()
+    )
 
 
 @app.route("/my-predictions")
 def my_predictions():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
-        return redirect(google_login.authorization_url())
+        return redirect(url_for("index"))
     fixtures = football_api_client.get_all_fixtures()
     return render_template(
         "my-predictions.html", user=user.to_json(), fixtures=fixtures
@@ -66,10 +71,10 @@ def my_predictions():
 def submit():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
-        return redirect(google_login.authorization_url())
+        return redirect(url_for("index"))
     set_predictions(user, request.form)
     flash("Your predictions were successfully saved!")
-    return redirect(url_for("my-predictions"))
+    return redirect(url_for("my_predictions"))
 
 
 @google_login.login_success
@@ -78,7 +83,7 @@ def login_success(token, profile):
     if not is_valid_email_domain(profile["hd"], whitelisted_domains):
         return jsonify(error="Please use a valid email address!")
     add_user(session, token, profile)
-    return redirect(url_for("my-predictions"))
+    return redirect(url_for("my_predictions"))
 
 
 @google_login.login_failure
