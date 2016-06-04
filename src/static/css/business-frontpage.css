@@ -24,6 +24,11 @@ body {
     padding-bottom: 20px;
 }
 
+.navbar-button {
+    float: left;
+    margin-left: 20px;
+}
+
 .container-nav {
     padding-top: 5px;
     padding-left: 10px;
