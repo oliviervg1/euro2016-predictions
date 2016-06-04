@@ -34,7 +34,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top navbar-min-height" role="navigation">
         <div class="container">
             <div class="navbar-header navbar-padding-bottom">
-                <p class="navbar-txt-colour navbar-brand"> <span><img class="img-margin-right" src="static/images/UEFA_Euro_2016_logo.png" alt="" width="100" height="50"></span>Cloudreach Competitions</p>
+                <p class="navbar-txt-colour navbar-brand"> <span><img class="img-margin-right" src="{{ url_for('static', filename='images/UEFA_Euro_2016_logo.png') }}" alt="" width="100" height="50"></span>Cloudreach Competitions</p>
             </div>
             {% block user_nav %}
             <div class="collapse navbar-collapse navbar-right navbar-txt-colour navbar-brand" id="dropdown">
@@ -58,13 +58,13 @@
             <div class="collapse navbar-collapse" id="links">
                 <ul class="nav navbar-nav navbar-padding-top">
                     <li>
-                        <a class="navbar-txt-colour navbar-brand" href="#">My predictions</a>
+                        <a class="navbar-txt-colour navbar-brand" href="{{ url_for('my_predictions') }}">My predictions</a>
                     </li>
                     <li>
-                        <a class="navbar-txt-colour navbar-brand" href="#">Sweepstakes allocations</a>
+                        <a class="navbar-txt-colour navbar-brand" href="{{ url_for('sweepstakes') }}">Sweepstakes allocations</a>
                     </li>
                     <li>
-                        <a class="navbar-txt-colour navbar-brand" href="#">Predictions leaderboard</a>
+                        <a class="navbar-txt-colour navbar-brand" href="{{ url_for('predictions') }}">Predictions leaderboard</a>
                     </li>
                 </ul>
             </div>

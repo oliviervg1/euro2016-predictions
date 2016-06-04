@@ -80,6 +80,16 @@ def submit():
     return redirect(url_for("my_predictions"))
 
 
+@app.route("/sweepstakes")
+def sweepstakes():
+    return jsonify(response="OK")
+
+
+@app.route("/predictions")
+def predictions():
+    return jsonify(response="OK")
+
+
 @google_login.login_success
 def login_success(token, profile):
     whitelisted_domains = config.get("google_login", "whitelisted_domains")
