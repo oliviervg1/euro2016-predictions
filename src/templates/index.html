@@ -1,51 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Euro 2016 Predictions">
-    <meta name="author" content="Olivier Van Goethem">
-
-    <title>Euro 2016 - Predictions Game</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="static/css/business-frontpage.css" rel="stylesheet">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top navbar-min-height" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <p class="navbar-txt-colour navbar-brand"> <span><img class="img-margin-right" src="static/images/UEFA_Euro_2016_logo.png" alt="" width="100" height="50"></span>Cloudreach Predictions</p>
-            </div>
-            <div class="collapse navbar-collapse navbar-right navbar-txt-colour navbar-brand" id="dropdown">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <p>Welcome {{ user.name }}!<span><img class="img-margin-left img-circle" src="{{ session.user.picture }}" alt="" width="50" height="50"></span></p>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
+{% block content %}
     <!-- Image Background Page Header -->
     <header class="business-header" style="background: url({{ user.allocated_team.crest_url }}) center center no-repeat scroll; background-size: cover;">
         <div class="container">
@@ -123,27 +78,6 @@
         </form>
         <!-- /.form -->
 
-        <hr>
-
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; 2016</p>
-                </div>
-            </div>
-            <!-- /.row -->
-        </footer>
-
     </div>
     <!-- /.container -->
-
-    <!-- jQuery -->
-    <script src="static/js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="static/js/bootstrap.min.js"></script>
-
-</body>
-
-</html>
+{% endblock %}
