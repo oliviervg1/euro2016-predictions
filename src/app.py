@@ -1,3 +1,4 @@
+from datetime import datetime
 from dateutil.parser import parse as parse_date
 
 from flask import Flask, request, flash, session, jsonify, redirect, url_for, \
@@ -76,8 +77,16 @@ def submit():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(url_for("index"))
-    set_predictions(user, request.form)
-    flash("Your predictions were successfully saved!")
+    # Has the Euro tournament started?
+    if datetime.utcnow() < datetime(2016, 6, 10, 19, 0, 0):
+        set_predictions(user, request.form)
+        flash("Your predictions were successfully saved!", "info")
+    else:
+        flash(
+            "The Euros has started! You are no longer allowed to change your "
+            "predictions...",
+            "danger"
+        )
     return redirect(url_for("my_predictions"))
 
 
