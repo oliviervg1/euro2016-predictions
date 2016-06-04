@@ -5,15 +5,31 @@
  */
 
 body {
-    padding-top: 80px;
+    padding-top: 150px;
 }
 
 .navbar-min-height {
-    min-height: 80px;
+    height: 130px;
 }
 
 .navbar-txt-colour {
     color: white !important;
+}
+
+.navbar-padding-top {
+    padding-top: 5px;
+}
+
+.navbar-padding-bottom {
+    padding-bottom: 20px;
+}
+
+.container-nav {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 30px;
+    min-height: 70px;
+    background-color: #616161;
 }
 
 .business-header {
