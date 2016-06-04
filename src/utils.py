@@ -1,6 +1,9 @@
 import random
 
+from collections import OrderedDict
 from ConfigParser import SafeConfigParser
+
+from sqlalchemy import desc
 
 from google_oauth_client import GoogleOauth2Client
 
@@ -65,6 +68,14 @@ def get_team_allocations():
         team.name: ", ".join([user.name for user in team.allocated_users])
         for team in all_teams
     }
+
+
+def get_predictions_leaderboard():
+    all_users = User.query.order_by(desc(User.points)).all()
+    leaderboard = OrderedDict()
+    for user in all_users:
+        leaderboard[user.name] = user.points
+    return leaderboard
 
 
 def set_predictions(user, form_predictions):

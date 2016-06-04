@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 class="text-margin-top text-margin-bottom">Predictions leaderboard:</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover table-bordered">
+                    <tr>
+                        <td><b>Positon</b></td>
+                        <td><b>Name</b></td>
+                        <td><b>Points</b></td>
+                    </tr>
+                    {% for user in leaderboard %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user }}</td>
+                        <td>{{ leaderboard[user] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
