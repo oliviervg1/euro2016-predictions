@@ -14,7 +14,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow())
     allocated_team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
-    points = db.Column(db.Integer)
+    points = db.Column(db.Integer, nullable=False)
 
     allocated_team = db.relationship("Team")
     predictions = db.relationship(

@@ -47,7 +47,7 @@ def add_user(session, token, profile):
     session["access_token"] = token["access_token"]
     user = User.query.filter_by(email=profile["email"]).first()
     if user is None:
-        user = User(email=profile["email"], name=profile["name"])
+        user = User(email=profile["email"], name=profile["name"], points=0)
         user.allocated_team = allocate_team()
         db.session.add(user)
         db.session.commit()
