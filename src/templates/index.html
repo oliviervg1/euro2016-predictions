@@ -82,14 +82,14 @@
                         </div>
                         <div class="col-sm-2">
                             <input type="hidden" name="home_team_{{ loop.index }}" value="{{ fixture.homeTeamName }}">
-                            <input type="number" min="0" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions.get(game).home_score }}">
+                            <input type="number" min="0" max="100" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions.get(game).home_score }}">
                         </div>
                         <div class="col-sm-1">
                             <p>-</p>
                         </div>
                         <div class="col-sm-2">
                             <input type="hidden" name="away_team_{{ loop.index }}" value="{{ fixture.awayTeamName }}">
-                            <input type="number" min="0" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions.get(game).away_score }}">
+                            <input type="number" min="0" max="100" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions.get(game).away_score }}">
                         </div>
                         <div class="col-sm-2">
                             <label for="away_team_{{ loop.index }}">{{ fixture.awayTeamName }}</label>
