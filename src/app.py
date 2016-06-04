@@ -8,7 +8,8 @@ from football_data_client import FootballDataApiClient
 
 from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
-    add_user, set_predictions, populate_teams_table, get_user_count
+    add_user, set_predictions, populate_teams_table, get_user_count, \
+    get_team_allocations
 
 config = get_config("./config/config.cfg")
 
@@ -82,12 +83,22 @@ def submit():
 
 @app.route("/sweepstakes")
 def sweepstakes():
-    return jsonify(response="OK")
+    is_logged_in, user = is_user_logged_in(session)
+    if not is_logged_in:
+        return redirect(url_for("index"))
+    return render_template(
+        "sweepstakes.html",
+        user=user.to_json(),
+        allocations=get_team_allocations()
+    )
 
 
 @app.route("/predictions")
 def predictions():
-    return jsonify(response="OK")
+    is_logged_in, user = is_user_logged_in(session)
+    if not is_logged_in:
+        return redirect(url_for("index"))
+    return render_template("predictions.html", user=user.to_json())
 
 
 @google_login.login_success

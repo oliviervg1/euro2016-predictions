@@ -59,6 +59,14 @@ def get_user_count():
     return User.query.count()
 
 
+def get_team_allocations():
+    all_teams = Team.query.all()
+    return {
+        team.name: ", ".join([user.name for user in team.allocated_users])
+        for team in all_teams
+    }
+
+
 def set_predictions(user, form_predictions):
     predictions = []
     i = 1
