@@ -1,6 +1,6 @@
 from dateutil.parser import parse as parse_date
 
-from flask import Flask, request, session, jsonify, redirect, url_for, \
+from flask import Flask, request, flash, session, jsonify, redirect, url_for, \
     render_template
 from flask_oauth2_login import GoogleLogin
 
@@ -63,6 +63,7 @@ def submit():
     if not is_logged_in:
         return redirect(google_login.authorization_url())
     set_predictions(user, request.form)
+    flash("Your predictions were successfully saved!")
     return redirect(url_for("index"))
 
 
@@ -80,7 +81,7 @@ def login_failure(error):
     return error(error)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     google_login.redirect_scheme = "http"
     with app.app_context():
         db.create_all()

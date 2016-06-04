@@ -62,9 +62,22 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <h1 class="text-margin-top text-margin-bottom">Your predictions:</h1>
+                <h1 class="text-margin-top text-margin-bottom">Your score predictions:</h1>
             </div>
         </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="row">
+                {% for message in messages %}
+                <div class="col-sm-12 alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p>{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
 
         <hr>
 
