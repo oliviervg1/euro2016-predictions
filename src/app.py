@@ -8,7 +8,7 @@ from football_data_client import FootballDataApiClient
 
 from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
-    add_user, set_predictions, populate_teams_table
+    add_user, set_predictions, populate_teams_table, get_user_count
 
 config = get_config("./config/config.cfg")
 
@@ -51,8 +51,11 @@ def index():
     is_logged_in, user = is_user_logged_in(session)
     if is_logged_in:
         return redirect(url_for("my_predictions"))
+    user_count = get_user_count()
     return render_template(
-        "index.html", google_login_url=google_login.authorization_url()
+        "index.html",
+        google_login_url=google_login.authorization_url(),
+        user_count=user_count
     )
 
 

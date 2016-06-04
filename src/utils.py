@@ -55,6 +55,10 @@ def add_user(session, token, profile):
     return user
 
 
+def get_user_count():
+    return User.query.count()
+
+
 def set_predictions(user, form_predictions):
     predictions = []
     i = 1
