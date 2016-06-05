@@ -43,6 +43,10 @@ class PredictionService(Blueprint):
             "type": "String",
             "description": "EC2 instance size to use for prediction service"
         },
+        "ELBName": {
+            "type": "String",
+            "description": "ELB name"
+        },
         "DomainName": {
             "type": "String",
             "description": "The domain name the app is running on"
@@ -90,7 +94,7 @@ class PredictionService(Blueprint):
 
         prediction_service_elastic_load_balancer = t.add_resource(LoadBalancer(
             "Euro2016ElasticLoadBalancer",
-            LoadBalancerName="euro2016-prediction-service-elb",
+            LoadBalancerName=Ref("ELBName"),
             Subnets=Ref("ELBSubnetIds"),
             Listeners=[
                 {
