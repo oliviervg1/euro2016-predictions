@@ -34,4 +34,5 @@ upload: package
 
 cloudformation: clean env lint
 	cp -r stackerformation/stacks env/lib/python2.7/site-packages/
-	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH -p DBPassword=$$DBPassword stackerformation/conf/euro2016.env stackerformation/conf/euro2016.yaml
+	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH -p DBPassword=$$DBPassword-cloudreach stackerformation/conf/euro2016.env stackerformation/conf/euro2016-cloudreach.yaml
+	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH -p DBPassword=$$DBPassword-www stackerformation/conf/euro2016.env stackerformation/conf/euro2016-www.yaml

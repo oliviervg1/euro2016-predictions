@@ -1,0 +1,32 @@
+db_parameters: &db_parameters
+  DBName: euro2016
+  DBUser: euro2016
+  DBPassword:
+
+stacks:
+  - name: cloudreach-prediction-service-db
+    class_path: stacks.euro2016_db.PredictionServiceDB
+    parameters:
+      << : *db_parameters
+      DBSubnetIds: subnet-9d9e4feb,subnet-4e698416,subnet-1b45e97f
+      DBSecurityGroups: sg-a10dbac6
+      DBInstanceClass: db.t2.micro
+      DBSize: 20
+
+  - name: cloudreach-prediction-service
+    class_path: stacks.euro2016.PredictionService
+    parameters:
+      << : *db_parameters
+      ELBSubnetIds: subnet-4d73bc3b,subnet-134faa4b,subnet-1803a77c
+      ELBSecurityGroups: sg-0e56f169
+      EC2SubnetIds: subnet-0c73bc7a,subnet-2a4faa72,subnet-8603a7e2
+      EC2SecurityGroups: sg-e356f184,sg-935ef9f4
+      KeyName: olivier.vangoethem
+      BaseAMI: ami-b0ac25c3
+      InstanceType: t2.micro
+      DomainName: cloudreach.euro2016-predictions.com
+      WhitelistedEmailDomains: cloudreach.com,cloudreach.co.uk
+      SSLCertificateId: arn:aws:acm:eu-west-1:305490617572:certificate/c61bec7f-0632-40ad-b578-33eb77b7f610
+      AppVersion:
+      DBAddress: cloudreach-prediction-service-db::DBAddress
+      DBPort: cloudreach-prediction-service-db::DBPort

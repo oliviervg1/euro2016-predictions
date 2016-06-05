@@ -4,7 +4,7 @@ db_parameters: &db_parameters
   DBPassword:
 
 stacks:
-  - name: prediction-service-db
+  - name: www-prediction-service-db
     class_path: stacks.euro2016_db.PredictionServiceDB
     parameters:
       << : *db_parameters
@@ -13,7 +13,7 @@ stacks:
       DBInstanceClass: db.t2.micro
       DBSize: 20
 
-  - name: prediction-service
+  - name: www-prediction-service
     class_path: stacks.euro2016.PredictionService
     parameters:
       << : *db_parameters
@@ -24,8 +24,9 @@ stacks:
       KeyName: olivier.vangoethem
       BaseAMI: ami-b0ac25c3
       InstanceType: t2.micro
-      DomainName: cloudreach.euro2016-predictions.com
-      SSLCertificateId: arn:aws:acm:eu-west-1:305490617572:certificate/c61bec7f-0632-40ad-b578-33eb77b7f610
+      DomainName: www.euro2016-predictions.com
+      WhitelistedEmailDomains: _all_
+      SSLCertificateId: arn:aws:acm:eu-west-1:305490617572:certificate/0813ff0a-2840-40f6-842c-0372b35307b1
       AppVersion:
-      DBAddress: prediction-service-db::DBAddress
-      DBPort: prediction-service-db::DBPort
+      DBAddress: www-prediction-service-db::DBAddress
+      DBPort: www-prediction-service-db::DBPort

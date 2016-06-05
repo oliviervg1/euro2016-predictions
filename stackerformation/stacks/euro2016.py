@@ -47,6 +47,13 @@ class PredictionService(Blueprint):
             "type": "String",
             "description": "The domain name the app is running on"
         },
+        "WhitelistedEmailDomains": {
+            "type": "String",
+            "description": (
+                "Comma delimited list of emails domains that are allowed to "
+                "sign in"
+            )
+        },
         "SSLCertificateId": {
             "type": "String",
             "description": "The ARN of the SSL certificate to use"
@@ -185,7 +192,7 @@ class PredictionService(Blueprint):
                     "service nginx restart\n",
 
                     "# Update config\n",
-                    "sed -i.bak -e 's|sqlite:///euro2016.db|mysql://", Ref("DBUser"), ":", Ref("DBPassword"), "@", Ref("DBAddress"), ":", Ref("DBPort"), "/", Ref("DBName"), "|' config/config.cfg\n",  # noqa
+                    "sed -i.bak -e 's|_all_|", Ref("WhitelistedEmailDomains"), "|' -e 's|sqlite:///euro2016.db|mysql://", Ref("DBUser"), ":", Ref("DBPassword"), "@", Ref("DBAddress"), ":", Ref("DBPort"), "/", Ref("DBName"), "|' config/config.cfg\n",  # noqa
 
                     "# Create db tables\n",
                     "python create_db_tables.py\n",
