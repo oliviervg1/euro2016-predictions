@@ -136,7 +136,7 @@ def predictions():
 @google_login.login_success
 def login_success(token, profile):
     whitelisted_domains = config.get("google_login", "whitelisted_domains")
-    if not is_valid_email_domain(profile["hd"], whitelisted_domains):
+    if not is_valid_email_domain(profile.get("hd"), whitelisted_domains):
         return jsonify(error="Please use a valid email address!")
     add_user(session, token, profile)
     return redirect(url_for("my_predictions"))
