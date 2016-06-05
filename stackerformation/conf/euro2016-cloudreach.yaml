@@ -24,7 +24,7 @@ stacks:
       KeyName: olivier.vangoethem
       BaseAMI: ami-b0ac25c3
       InstanceType: t2.micro
-      ELBName: euro2016-www-prediction-service-elb
+      ELBName: euro2016-cloudreach-prediction-service-elb
       DomainName: cloudreach.euro2016-predictions.com
       WhitelistedEmailDomains: cloudreach.com,cloudreach.co.uk
       SSLCertificateId: arn:aws:acm:eu-west-1:305490617572:certificate/c61bec7f-0632-40ad-b578-33eb77b7f610
