@@ -1,5 +1,6 @@
 import random
 
+from datetime import datetime
 from collections import OrderedDict
 from ConfigParser import SafeConfigParser
 
@@ -58,6 +59,10 @@ def add_user(session, token, profile):
     return user
 
 
+def get_user_information(user_id):
+    return User.query.filter_by(id=user_id).one()
+
+
 def get_user_count():
     return User.query.count()
 
@@ -74,7 +79,10 @@ def get_predictions_leaderboard():
     all_users = User.query.order_by(desc(User.points)).all()
     leaderboard = OrderedDict()
     for user in all_users:
-        leaderboard[user.name] = user.points
+        leaderboard[user.name] = {
+            "id": user.id,
+            "points": user.points
+        }
     return leaderboard
 
 
@@ -110,3 +118,9 @@ def populate_teams_table(teams):
         db.session.commit()
     except:
         db.session.rollback()
+
+
+def has_euros_started():
+    if datetime.utcnow() < datetime(2016, 6, 10, 19, 0, 0):
+        return False
+    return True

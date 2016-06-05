@@ -1,12 +1,21 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
+    {% if not editable %}
+        {% set user = other_user %}
+    {% endif %}
+
     <!-- Image Background Page Header -->
     <header class="business-header" style="background: url({{ user.allocated_team.crest_url }}) center center no-repeat scroll; background-size: cover;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
+                    {% if editable %}
                     <h1 class="tagline">You've been allocated {{ user.allocated_team.name }} in the sweepstakes</h1>
+                    {% else %}
+                    <h1 class="tagline">{{ user.name }} has been allocated {{ user.allocated_team.name }} in the sweepstakes</h1>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -17,7 +26,11 @@
 
         <div class="row">
             <div class="col-sm-12">
+                {% if editable %}
                 <h1 class="text-margin-top text-margin-bottom">Your score predictions:</h1>
+                {% else %}
+                <h1 class="text-margin-top text-margin-bottom">{{ user.name }}'s score predictions:</h1>
+                {% endif %}
             </div>
         </div>
 
@@ -36,7 +49,9 @@
 
         <hr>
 
+        {% if editable %}
         <form class="form-inline" action="{{ url_for("submit") }}" method="post">
+        {% endif %}
             {% for fixture in fixtures %}
             {% set game = fixture.homeTeamName + '_' + fixture.awayTeamName %}
             <div class="row">
@@ -49,15 +64,23 @@
                             <label for="home_team_{{ loop.index }}">{{ fixture.homeTeamName }}</label>
                         </div>
                         <div class="col-sm-2">
+                            {% if editable %}
                             <input type="hidden" name="home_team_{{ loop.index }}" value="{{ fixture.homeTeamName }}">
                             <input type="number" min="0" max="100" name="home_score_{{ loop.index }}" class="form-control form-width" id="home_score_{{ loop.index }}" value="{{ user.predictions.get(game).home_score }}">
+                            {% else %}
+                            <p>{{ user.predictions.get(game).home_score }}</p>
+                            {% endif %}
                         </div>
                         <div class="col-sm-1">
                             <p>-</p>
                         </div>
                         <div class="col-sm-2">
+                            {% if editable %}
                             <input type="hidden" name="away_team_{{ loop.index }}" value="{{ fixture.awayTeamName }}">
                             <input type="number" min="0" max="100" name="away_score_{{ loop.index }}" class="form-control form-width" id="away_score_{{ loop.index }}" value="{{ user.predictions.get(game).away_score }}">
+                            {% else %}
+                            <p>{{ user.predictions.get(game).away_score }}</p>
+                            {% endif %}
                         </div>
                         <div class="col-sm-2">
                             <label for="away_team_{{ loop.index }}">{{ fixture.awayTeamName }}</label>
@@ -69,13 +92,17 @@
             {% endfor %}
             <!-- /.row -->
 
+            {% if editable %}
             <div class="row text-margin-bottom">
                 <div class="col-sm-12">
                     <button type="submit" class="btn btn-primary" value="Submit">Save predictions</button>
                 </div>
             </div>
+            {% endif %}
             <!-- /.row -->
+        {% if editable %}
         </form>
+        {% endif %}
         <!-- /.form -->
 
     </div>

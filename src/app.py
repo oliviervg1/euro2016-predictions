@@ -1,4 +1,3 @@
-from datetime import datetime
 from dateutil.parser import parse as parse_date
 
 from flask import Flask, request, flash, session, jsonify, redirect, url_for, \
@@ -10,7 +9,8 @@ from football_data_client import FootballDataApiClient
 from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
     add_user, set_predictions, populate_teams_table, get_user_count, \
-    get_team_allocations, get_predictions_leaderboard
+    get_team_allocations, get_predictions_leaderboard, get_user_information, \
+    has_euros_started
 
 config = get_config("./config/config.cfg")
 
@@ -68,7 +68,10 @@ def my_predictions():
         return redirect(url_for("index"))
     fixtures = football_api_client.get_all_fixtures()
     return render_template(
-        "my-predictions.html", user=user.to_json(), fixtures=fixtures
+        "my-predictions.html",
+        user=user.to_json(),
+        fixtures=fixtures,
+        editable=True
     )
 
 
@@ -78,7 +81,7 @@ def submit():
     if not is_logged_in:
         return redirect(url_for("index"))
     # Has the Euro tournament started?
-    if datetime.utcnow() < datetime(2016, 6, 10, 19, 0, 0):
+    if not has_euros_started():
         set_predictions(user, request.form)
         flash("Your predictions were successfully saved!", "info")
     else:
@@ -88,6 +91,22 @@ def submit():
             "danger"
         )
     return redirect(url_for("my_predictions"))
+
+
+@app.route("/user/<int:user_id>")
+def user(user_id):
+    is_logged_in, user = is_user_logged_in(session)
+    if not is_logged_in:
+        return redirect(url_for("index"))
+    fixtures = football_api_client.get_all_fixtures()
+    other_user = get_user_information(user_id)
+    return render_template(
+        "my-predictions.html",
+        user=user.to_json(),
+        fixtures=fixtures,
+        other_user=other_user.to_json(),
+        editable=False
+    )
 
 
 @app.route("/sweepstakes")
