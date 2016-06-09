@@ -53,6 +53,8 @@ def index():
     is_logged_in, user = is_user_logged_in(session)
     if is_logged_in:
         return redirect(url_for("my_predictions"))
+    if session.get("seen"):
+        return redirect(google_login.authorization_url())
     user_count = get_user_count()
     return render_template(
         "index.html",
@@ -139,6 +141,7 @@ def login_success(token, profile):
     if not is_valid_email_domain(profile.get("hd"), whitelisted_domains):
         return jsonify(error="Please use a valid email address!")
     add_user(session, token, profile)
+    session["seen"] = True
     return redirect(url_for("my_predictions"))
 
 
