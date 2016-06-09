@@ -71,7 +71,7 @@ def my_predictions():
         "my-predictions.html",
         user=user.to_json(),
         fixtures=fixtures,
-        editable=True
+        editable=not has_euros_started()
     )
 
 
