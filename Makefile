@@ -55,7 +55,7 @@ lambda-package: clean lambda-clean lambda-prepare
 	virtualenv env
 	. env/bin/activate && pip install -r lambda/requirements.txt
 	cp -r lambda/* BUILD/
-	cp -r env/lib/python2.7/site-packages/* BUILD/
+	cp -r env/lib64/python2.7/site-packages/* BUILD/
 	cp /usr/lib/libmysqlclient.so.18 BUILD/
 	sed -i.bak -e 's|sqlite:///euro2016.db|${LAMBDA_DB_URL}|' BUILD/config.cfg
 	cd BUILD; zip -r -X update-points-$$LAMBDA_NAME.zip .
