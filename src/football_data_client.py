@@ -35,3 +35,20 @@ class FootballDataApiClient(object):
             response.raise_for_status()
             self._all_fixtures = response.json()["fixtures"]
         return self._all_fixtures
+
+    def get_results(self):
+        response = self.requests.get(
+            "{0}/soccerseasons/{1}/fixtures".format(
+                self.base_endpoint, self.soccer_season_id
+            )
+        )
+        response.raise_for_status()
+        return {
+            "{}_{}".format(fixture["homeTeamName"], fixture["awayTeamName"]):
+                {
+                    "home_score": fixture["result"]["goalsHomeTeam"],
+                    "away_score": fixture["result"]["goalsAwayTeam"]
+                }
+            for fixture in response.json()["fixtures"]
+            if fixture["result"]["goalsHomeTeam"] is not None and fixture["result"]["goalsAwayTeam"] is not None  # noqa
+        }

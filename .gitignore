@@ -1,6 +1,10 @@
 deploy.sh
 euro2016.db
 config.cfg
+config.cfg.bak
+lambda/football_data_client.py
+lambda/models.py
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

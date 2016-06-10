@@ -1,0 +1,132 @@
+{
+    "_links": {
+        "self": {
+            "href": "http://api.football-data.org/v1/soccerseasons/424/fixtures"
+        },
+        "soccerseason": {
+            "href": "http://api.football-data.org/v1/soccerseasons/424"
+        }
+    },
+    "count": 36,
+    "fixtures": [{
+        "_links": {
+            "self": {
+                "href": "http://api.football-data.org/v1/fixtures/149855"
+            },
+            "soccerseason": {
+                "href": "http://api.football-data.org/v1/soccerseasons/424"
+            },
+            "homeTeam": {
+                "href": "http://api.football-data.org/v1/teams/773"
+            },
+            "awayTeam": {
+                "href": "http://api.football-data.org/v1/teams/811"
+            }
+        },
+        "date": "2016-06-10T19:00:00Z",
+        "status": "TIMED",
+        "matchday": 1,
+        "homeTeamName": "France",
+        "awayTeamName": "Romania",
+        "result": {
+            "goalsHomeTeam": 1,
+            "goalsAwayTeam": 1
+        }
+    }, {
+        "_links": {
+            "self": {
+                "href": "http://api.football-data.org/v1/fixtures/149885"
+            },
+            "soccerseason": {
+                "href": "http://api.football-data.org/v1/soccerseasons/424"
+            },
+            "homeTeam": {
+                "href": "http://api.football-data.org/v1/teams/1065"
+            },
+            "awayTeam": {
+                "href": "http://api.football-data.org/v1/teams/788"
+            }
+        },
+        "date": "2016-06-11T13:00:00Z",
+        "status": "TIMED",
+        "matchday": 1,
+        "homeTeamName": "Albania",
+        "awayTeamName": "Switzerland",
+        "result": {
+            "goalsHomeTeam": 1,
+            "goalsAwayTeam": 2
+        }
+    }, {
+        "_links": {
+            "self": {
+                "href": "http://api.football-data.org/v1/fixtures/149861"
+            },
+            "soccerseason": {
+                "href": "http://api.football-data.org/v1/soccerseasons/424"
+            },
+            "homeTeam": {
+                "href": "http://api.football-data.org/v1/teams/833"
+            },
+            "awayTeam": {
+                "href": "http://api.football-data.org/v1/teams/768"
+            }
+        },
+        "date": "2016-06-11T16:00:00Z",
+        "status": "TIMED",
+        "matchday": 1,
+        "homeTeamName": "Wales",
+        "awayTeamName": "Slovakia",
+        "result": {
+            "goalsHomeTeam": 2,
+            "goalsAwayTeam": 1
+        }
+    },{
+        "_links": {
+            "self": {
+                "href": "http://api.football-data.org/v1/fixtures/149861"
+            },
+            "soccerseason": {
+                "href": "http://api.football-data.org/v1/soccerseasons/424"
+            },
+            "homeTeam": {
+                "href": "http://api.football-data.org/v1/teams/833"
+            },
+            "awayTeam": {
+                "href": "http://api.football-data.org/v1/teams/768"
+            }
+        },
+        "date": "2016-06-11T16:00:00Z",
+        "status": "TIMED",
+        "matchday": 1,
+        "homeTeamName": "England",
+        "awayTeamName": "France",
+        "result": {
+            "goalsHomeTeam": null,
+            "goalsAwayTeam": null
+        }
+    },{
+        "_links": {
+            "self": {
+                "href": "http://api.football-data.org/v1/fixtures/149861"
+            },
+            "soccerseason": {
+                "href": "http://api.football-data.org/v1/soccerseasons/424"
+            },
+            "homeTeam": {
+                "href": "http://api.football-data.org/v1/teams/833"
+            },
+            "awayTeam": {
+                "href": "http://api.football-data.org/v1/teams/768"
+            }
+        },
+        "date": "2016-06-11T16:00:00Z",
+        "status": "TIMED",
+        "matchday": 1,
+        "homeTeamName": "Belgium",
+        "awayTeamName": "Germany",
+        "result": {
+            "goalsHomeTeam": null,
+            "goalsAwayTeam": null
+        }
+    }]
+}

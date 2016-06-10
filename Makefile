@@ -13,11 +13,22 @@ clean:
 	- find . -name "*.pyc" | xargs rm
 
 lint: env
-	. env/bin/activate && flake8 src/ stackerformation/
+	. env/bin/activate && flake8 src/ lambda/ stackerformation/
 
 run: env lint
 	# . env/bin/activate && cd src && gunicorn app:app
 	. env/bin/activate && cd src && python app.py
+
+lambda-clean:
+	- rm lambda/config{.cfg,.cfg.bak}
+	- rm lambda/{models.py,football_data_client.py}
+
+lambda-prepare: env lint
+	cp src/{models.py,football_data_client.py,config/config.cfg} lambda/
+
+lambda-run: lambda-clean lambda-prepare
+	sed -i.bak -e 's|sqlite:///euro2016.db|sqlite:///../src/euro2016.db|' lambda/config.cfg
+	. env/bin/activate && cd lambda && python update_points.py
 
 package: clean
 	mkdir -p BUILD pip-repo
