@@ -1,6 +1,7 @@
-.PHONY: clean lint run package upload deploy lambda-clean lambda-prepare lambda-package lambda-run lambda-package lambda-deploy
+.PHONY: clean lint run package upload deploy lambda-clean lambda-prepare lambda-package lambda-run lambda-package lambda-upload lambda-deploy
 
 export GIT_HASH=$(shell git log -1 --format="%H")
+export CODE_BUCKET=oliviervg1-code
 
 env:
 	virtualenv env
@@ -9,7 +10,7 @@ env:
 clean:
 	- rm -rf env BUILD pip-repo
 	- rm app.zip
-	- rm lambda-*.zip
+	- rm update-points-*.zip
 	- rm src/euro2016.db
 	- find . -name "*.pyc" | xargs rm
 
@@ -31,7 +32,7 @@ package: clean
 	mv BUILD/app.zip .
 
 upload: package
-	aws s3 cp app.zip s3://oliviervg1-code/euro2016/app-$$GIT_HASH.zip
+	aws s3 cp app.zip s3://$$CODE_BUCKET/euro2016/app-$$GIT_HASH.zip
 
 deploy: clean env lint
 	cp -r stackerformation/stacks env/lib/python2.7/site-packages/
@@ -55,7 +56,11 @@ lambda-package: clean lambda-clean lambda-prepare
 	. env/bin/activate && pip install -r lambda/requirements.txt
 	cp -r lambda/* BUILD/
 	cp -r env/lib/python2.7/site-packages/* BUILD/
-	cd BUILD; zip -r -X lambda-BLA.zip .
-	mv BUILD/lambda-BLA.zip .
+	sed -i.bak -e 's|sqlite:///euro2016.db|${LAMBDA_DB_URL}|' BUILD/config.cfg
+	cd BUILD; zip -r -X update-points-$$LAMBDA_NAME.zip .
+	mv BUILD/update-points-$$LAMBDA_NAME.zip .
+
+lambda-upload: lambda-package
+	aws s3 cp update-points-$$LAMBDA_NAME.zip s3://$$CODE_BUCKET/euro2016/update-points-$$LAMBDA_NAME-$$GIT_HASH.zip
 
 lambda-deploy:
