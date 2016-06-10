@@ -64,3 +64,4 @@ lambda-upload: lambda-package
 	aws s3 cp update-points-$$LAMBDA_NAME.zip s3://$$CODE_BUCKET/euro2016/update-points-$$LAMBDA_NAME-$$GIT_HASH.zip
 
 lambda-deploy:
+	aws lambda update-function-code --function-name $$LAMBDA_NAME --s3-bucket $$CODE_BUCKET --s3-key euro2016/update-points-$$LAMBDA_NAME-$$GIT_HASH.zip
