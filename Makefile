@@ -1,4 +1,4 @@
-.PHONY: clean lint run package upload cloudformation
+.PHONY: clean lint run package upload deploy lambda-clean lambda-prepare lambda-package lambda-run lambda-package lambda-deploy
 
 export GIT_HASH=$(shell git log -1 --format="%H")
 
@@ -9,6 +9,7 @@ env:
 clean:
 	- rm -rf env BUILD pip-repo
 	- rm app.zip
+	- rm lambda-*.zip
 	- rm src/euro2016.db
 	- find . -name "*.pyc" | xargs rm
 
@@ -18,17 +19,6 @@ lint: env
 run: env lint
 	# . env/bin/activate && cd src && gunicorn app:app
 	. env/bin/activate && cd src && python app.py
-
-lambda-clean:
-	- rm lambda/config{.cfg,.cfg.bak}
-	- rm lambda/{models.py,football_data_client.py}
-
-lambda-prepare: env lint
-	cp src/{models.py,football_data_client.py,config/config.cfg} lambda/
-
-lambda-run: lambda-clean lambda-prepare
-	sed -i.bak -e 's|sqlite:///euro2016.db|sqlite:///../src/euro2016.db|' lambda/config.cfg
-	. env/bin/activate && cd lambda && python update_points.py
 
 package: clean
 	mkdir -p BUILD pip-repo
@@ -43,7 +33,29 @@ package: clean
 upload: package
 	aws s3 cp app.zip s3://oliviervg1-code/euro2016/app-$$GIT_HASH.zip
 
-cloudformation: clean env lint
+deploy: clean env lint
 	cp -r stackerformation/stacks env/lib/python2.7/site-packages/
 	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH -p DBPassword=$$DBPassword_cloudreach stackerformation/conf/euro2016.env stackerformation/conf/euro2016-cloudreach.yaml
 	. env/bin/activate && stacker build -r eu-west-1 -p AppVersion=$$GIT_HASH -p DBPassword=$$DBPassword_www stackerformation/conf/euro2016.env stackerformation/conf/euro2016-www.yaml
+
+lambda-clean:
+	- rm lambda/config{.cfg,.cfg.bak}
+	- rm lambda/{models.py,football_data_client.py}
+
+lambda-prepare:
+	cp src/{models.py,football_data_client.py,config/config.cfg} lambda/
+
+lambda-run: lambda-clean lint lambda-prepare
+	sed -i.bak -e 's|sqlite:///euro2016.db|sqlite:///../src/euro2016.db|' lambda/config.cfg
+	. env/bin/activate && cd lambda && python update_points.py
+
+lambda-package: clean lambda-clean lambda-prepare
+	mkdir -p BUILD
+	virtualenv env
+	. env/bin/activate && pip install -r lambda/requirements.txt
+	cp -r lambda/* BUILD/
+	cp -r env/lib/python2.7/site-packages/* BUILD/
+	cd BUILD; zip -r -X lambda-BLA.zip .
+	mv BUILD/lambda-BLA.zip .
+
+lambda-deploy:
