@@ -45,6 +45,7 @@ def calculate_points(predictions, results):
                 predicted_score["home_score"] == predicted_score["away_score"] and  # noqa
                 results[game]["home_score"] == results[game]["away_score"]
             ):
+                points += 1
             elif (
                 predicted_score["home_score"] > predicted_score["away_score"] and  # noqa
                 results[game]["home_score"] > results[game]["away_score"]
