@@ -72,3 +72,21 @@ class Prediction(db.Model):
             "home_score": self.home_score,
             "away_score": self.away_score
         }
+
+
+class Result(db.Model):
+    __tablename__ = "results"
+
+    home_team = db.Column(db.String(100), primary_key=True, nullable=False)
+    home_score = db.Column(db.Integer, nullable=False)
+    away_team = db.Column(db.String(100), primary_key=True, nullable=False)
+    away_score = db.Column(db.Integer, nullable=False)
+
+    def get_key(self):
+        return "{0}_{1}".format(self.home_team, self.away_team)
+
+    def get_value(self):
+        return {
+            "home_score": self.home_score,
+            "away_score": self.away_score
+        }

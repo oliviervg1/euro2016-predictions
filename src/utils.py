@@ -8,7 +8,7 @@ from sqlalchemy import desc
 
 from google_oauth_client import GoogleOauth2Client
 
-from models import db, User, Prediction, Team
+from models import db, User, Prediction, Team, Result
 
 
 def get_config(config_path):
@@ -124,3 +124,58 @@ def has_euros_started():
     if datetime.utcnow() < datetime(2016, 6, 10, 19, 0, 0):
         return False
     return True
+
+
+def get_points_for_user(user_predictions):
+    # Cater for fact that results table might not exist
+    try:
+        results = Result.query.all()
+    except:
+        return {}
+
+    user_points = {}
+
+    for result in results:
+        game = result.get_key()
+        if game in user_predictions:
+            score = result.get_value()
+            score_str = "{home_score} - {away_score}".format(**score)
+            if (
+                score["home_score"] == user_predictions[game]["home_score"] and
+                score["away_score"] == user_predictions[game]["away_score"]
+            ):
+                user_points[game] = {
+                    "result": score_str,
+                    "points": 3
+                }
+            elif (
+                score["home_score"] == score["away_score"] and
+                user_predictions[game]["home_score"] == user_predictions[game]["away_score"]  # noqa
+            ):
+                user_points[game] = {
+                    "result": score_str,
+                    "points": 1
+                }
+            elif (
+                score["home_score"] > score["away_score"] and
+                user_predictions[game]["home_score"] > user_predictions[game]["away_score"]  # noqa
+            ):
+                user_points[game] = {
+                    "result": score_str,
+                    "points": 1
+                }
+            elif (
+                score["home_score"] < score["away_score"] and
+                user_predictions[game]["home_score"] < user_predictions[game]["away_score"]  # noqa
+            ):
+                user_points[game] = {
+                    "result": score_str,
+                    "points": 1
+                }
+            else:
+                user_points[game] = {
+                    "result": score_str,
+                    "points": 0
+                }
+
+    return user_points

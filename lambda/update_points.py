@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from football_data_client import FootballDataApiClient
-from models import User
+from models import User, Result
 
 
 def setup_logger():
@@ -28,6 +28,20 @@ def get_db_session(db_url):
     engine = create_engine(db_url)
     Session = sessionmaker(bind=engine)
     return Session()
+
+
+def update_results(session, results):
+    for game in results:
+        try:
+            session.add(Result(
+                home_team=game.split("_")[0],
+                home_score=results[game]["home_score"],
+                away_team=game.split("_")[-1],
+                away_score=results[game]["away_score"]
+            ))
+            session.commit()
+        except:
+            session.rollback()
 
 
 def calculate_points(predictions, results):
@@ -71,6 +85,9 @@ def lambda_handler(event, context):
     results = football_api_client.get_results()
     logger.info("Results are:")
     pprint(results)
+
+    # Update results
+    update_results(session, results)
 
     # Update points
     users = session.query(User).all()

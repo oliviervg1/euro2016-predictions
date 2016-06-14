@@ -10,7 +10,7 @@ from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
     add_user, set_predictions, populate_teams_table, get_user_count, \
     get_team_allocations, get_predictions_leaderboard, get_user_information, \
-    has_euros_started
+    has_euros_started, get_points_for_user
 
 config = get_config("./config/config.cfg")
 
@@ -68,11 +68,12 @@ def my_predictions():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(url_for("index"))
-    fixtures = football_api_client.get_all_fixtures()
+    user_info = user.to_json()
     return render_template(
         "my-predictions.html",
-        user=user.to_json(),
-        fixtures=fixtures,
+        user=user_info,
+        fixtures=football_api_client.get_all_fixtures(),
+        points=get_points_for_user(user_info["predictions"]),
         editable=not has_euros_started()
     )
 
@@ -100,13 +101,11 @@ def user(user_id):
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(url_for("index"))
-    fixtures = football_api_client.get_all_fixtures()
-    other_user = get_user_information(user_id)
     return render_template(
         "my-predictions.html",
         user=user.to_json(),
-        fixtures=fixtures,
-        other_user=other_user.to_json(),
+        fixtures=football_api_client.get_all_fixtures(),
+        other_user=get_user_information(user_id).to_json(),
         editable=False
     )
 
