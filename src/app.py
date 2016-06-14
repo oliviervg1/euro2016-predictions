@@ -101,11 +101,13 @@ def user(user_id):
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(url_for("index"))
+    other_user_info = get_user_information(user_id).to_json()
     return render_template(
         "my-predictions.html",
         user=user.to_json(),
         fixtures=football_api_client.get_all_fixtures(),
-        other_user=get_user_information(user_id).to_json(),
+        points=get_points_for_user(other_user_info["predictions"]),
+        other_user=other_user_info,
         editable=False
     )
 
