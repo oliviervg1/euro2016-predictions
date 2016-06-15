@@ -33,12 +33,20 @@ def get_db_session(db_url):
 def update_results(session, results):
     for game in results:
         try:
-            session.add(Result(
-                home_team=game.split("_")[0],
-                home_score=results[game]["home_score"],
-                away_team=game.split("_")[-1],
-                away_score=results[game]["away_score"]
-            ))
+            result = session.query(Result).filter_by(
+                home_team=game.split("_")[0], away_team=game.split("_")[-1]
+            ).first()
+            if not result:
+                result = Result(
+                    home_team=game.split("_")[0],
+                    home_score=results[game]["home_score"],
+                    away_team=game.split("_")[-1],
+                    away_score=results[game]["away_score"]
+                )
+            else:
+                result.home_score = results[game]["home_score"]
+                result.away_score = results[game]["away_score"]
+            session.add(result)
             session.commit()
         except:
             session.rollback()
