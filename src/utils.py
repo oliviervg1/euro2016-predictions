@@ -1,3 +1,4 @@
+import pytz
 import random
 
 from datetime import datetime
@@ -86,22 +87,49 @@ def get_predictions_leaderboard():
     return leaderboard
 
 
-def set_predictions(user, form_predictions):
+def convert_submit_form_to_dict(form_predictions):
     predictions = []
     i = 1
     while True:
         try:
-            predictions.append(Prediction(
-                home_team=form_predictions["home_team_{0}".format(i)],
-                home_score=form_predictions["home_score_{0}".format(i)],
-                away_team=form_predictions["away_team_{0}".format(i)],
-                away_score=form_predictions["away_score_{0}".format(i)]
-            ))
+            predictions.append({
+                "matchday": int(form_predictions["matchday_{0}".format(i)]),
+                "home_team": form_predictions["home_team_{0}".format(i)],
+                "home_score": form_predictions["home_score_{0}".format(i)],
+                "away_team": form_predictions["away_team_{0}".format(i)],
+                "away_score": form_predictions["away_score_{0}".format(i)]
+            })
             i += 1
         except KeyError:
             break
-    db.session.add_all(predictions)
-    user.predictions = predictions
+    return predictions
+
+
+def set_predictions(user, predictions):
+    for prediction in predictions:
+        try:
+            db_prediction = Prediction.query.filter_by(
+                matchday=prediction["matchday"],
+                home_team=prediction["home_team"],
+                away_team=prediction["away_team"]
+            ).first()
+
+            if db_prediction is None:
+                db_prediction = Prediction(
+                    matchday=prediction["matchday"],
+                    home_team=prediction["home_team"],
+                    home_score=prediction["home_score"],
+                    away_team=prediction["away_team"],
+                    away_score=prediction["away_score"]
+                )
+                db.session.add(db_prediction)
+                user.predictions.append(db_prediction)
+            else:
+                db_prediction.home_score = prediction["home_score"]
+                db_prediction.away_score = prediction["away_score"]
+        except:
+            db.session.rollback()
+            raise
     db.session.commit()
     return True
 
@@ -120,10 +148,8 @@ def populate_teams_table(teams):
         db.session.rollback()
 
 
-def has_euros_started():
-    if datetime.utcnow() < datetime(2016, 6, 10, 19, 0, 0):
-        return False
-    return True
+def get_current_time():
+    return datetime.utcnow().replace(tzinfo=pytz.utc)
 
 
 def get_points_for_user(user_predictions):

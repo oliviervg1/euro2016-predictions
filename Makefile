@@ -1,4 +1,4 @@
-.PHONY: clean lint run package upload deploy lambda-clean lambda-prepare lambda-package lambda-run lambda-package lambda-upload lambda-deploy
+.PHONY: clean-all clean lint run package upload deploy lambda-clean lambda-prepare lambda-package lambda-run lambda-package lambda-upload lambda-deploy
 
 export GIT_HASH=$(shell git log -1 --format="%H")
 export CODE_BUCKET=oliviervg1-code
@@ -6,6 +6,9 @@ export CODE_BUCKET=oliviervg1-code
 env:
 	virtualenv env
 	. env/bin/activate && pip install -r requirements.txt -r requirements-dev.txt
+
+
+clean-all: clean lambda-clean
 
 clean:
 	- rm -rf env BUILD pip-repo

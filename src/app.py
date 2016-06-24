@@ -10,7 +10,7 @@ from models import db
 from utils import get_config, is_user_logged_in, is_valid_email_domain, \
     add_user, set_predictions, populate_teams_table, get_user_count, \
     get_team_allocations, get_predictions_leaderboard, get_user_information, \
-    has_euros_started, get_points_for_user
+    get_current_time, get_points_for_user, convert_submit_form_to_dict
 
 config = get_config("./config/config.cfg")
 
@@ -33,9 +33,14 @@ football_api_client = FootballDataApiClient(
 
 
 @app.template_filter("strftime")
-def filter_datetime(date_time):
+def strftime(date_time):
     date_time_object = parse_date(date_time)
     return date_time_object.strftime("%a %d %B %Y - %H:%M UTC")
+
+
+@app.template_filter("convert_to_datetime")
+def convert_to_datetime(date_time):
+    return parse_date(date_time)
 
 
 @app.errorhandler(Exception)
@@ -74,7 +79,7 @@ def my_predictions():
         user=user_info,
         fixtures=football_api_client.get_all_fixtures(),
         points=get_points_for_user(user_info["predictions"]),
-        editable=not has_euros_started()
+        current_time=get_current_time()
     )
 
 
@@ -83,16 +88,13 @@ def submit():
     is_logged_in, user = is_user_logged_in(session)
     if not is_logged_in:
         return redirect(url_for("index"))
-    # Has the Euro tournament started?
-    if not has_euros_started():
-        set_predictions(user, request.form)
+    predictions = convert_submit_form_to_dict(request.form)
+    try:
+        football_api_client.check_predictions_validity(predictions)
+        set_predictions(user, predictions)
         flash("Your predictions were successfully saved!", "info")
-    else:
-        flash(
-            "The Euros has started! You are no longer allowed to change your "
-            "predictions...",
-            "danger"
-        )
+    except Exception as e:
+        flash(str(e), "danger")
     return redirect(url_for("my_predictions"))
 
 
@@ -108,7 +110,7 @@ def user(user_id):
         fixtures=football_api_client.get_all_fixtures(),
         points=get_points_for_user(other_user_info["predictions"]),
         other_user=other_user_info,
-        editable=False
+        current_time=get_current_time()
     )
 
 

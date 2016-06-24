@@ -1,3 +1,4 @@
+pytz
 flask
 flask-oauth2-login
 flask-sqlalchemy

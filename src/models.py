@@ -56,6 +56,7 @@ class Prediction(db.Model):
     __tablename__ = "predictions"
 
     id = db.Column(db.Integer, primary_key=True)
+    matchday = db.Column(db.Integer, nullable=False, default=0)
     home_team = db.Column(db.String(100), nullable=False)
     home_score = db.Column(db.Integer, nullable=False)
     away_team = db.Column(db.String(100), nullable=False)

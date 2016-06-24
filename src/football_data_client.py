@@ -52,3 +52,34 @@ class FootballDataApiClient(object):
             for fixture in response.json()["fixtures"]
             if fixture["result"]["goalsHomeTeam"] is not None and fixture["result"]["goalsAwayTeam"] is not None  # noqa
         }
+
+    def check_predictions_validity(self, predictions):
+        fixtures = self.get_all_fixtures()
+
+        def find_fixture(matchday, home_team, away_team):
+            games = [
+                fixture for fixture in fixtures
+                if fixture["matchday"] == matchday and
+                fixture["homeTeamName"] == home_team and
+                fixture["awayTeamName"] == away_team
+            ]
+            if len(games) != 1:
+                raise Exception(
+                    "Looks like you tried to predict the score for a game "
+                    "that doesn't exist!"
+                )
+            return games[0]
+
+        for prediction in predictions:
+            fixture = find_fixture(
+                prediction["matchday"],
+                prediction["home_team"],
+                prediction["away_team"]
+            )
+            if fixture["status"] == "FINISHED":
+                raise Exception(
+                    "You can't set a prediction for a game that has already "
+                    "happened!"
+                )
+
+        return True
