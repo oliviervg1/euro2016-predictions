@@ -55,7 +55,7 @@
 
             {% set index = 0 %}
             {% for fixture in fixtures %}
-                {% set game = fixture.homeTeamName + '_' + fixture.awayTeamName %}
+                {% set game = fixture.matchday|string + '_' + fixture.homeTeamName + '_' + fixture.awayTeamName %}
                 {% set kick_off = fixture.date|convert_to_datetime %}
                 {% set editable = True if current_time < kick_off and not other_user else False %}
                 {% if editable %}
