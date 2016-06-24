@@ -109,6 +109,7 @@ def set_predictions(user, predictions):
     for prediction in predictions:
         try:
             db_prediction = Prediction.query.filter_by(
+                user_id=user.id
                 matchday=prediction["matchday"],
                 home_team=prediction["home_team"],
                 away_team=prediction["away_team"]
