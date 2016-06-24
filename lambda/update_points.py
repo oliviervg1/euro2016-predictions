@@ -34,13 +34,16 @@ def update_results(session, results):
     for game in results:
         try:
             result = session.query(Result).filter_by(
-                home_team=game.split("_")[0], away_team=game.split("_")[-1]
+                matchday=game.split("_")[0],
+                home_team=game.split("_")[1],
+                away_team=game.split("_")[2]
             ).first()
             if not result:
                 result = Result(
-                    home_team=game.split("_")[0],
+                    matchday=game.split("_")[0],
+                    home_team=game.split("_")[1],
                     home_score=results[game]["home_score"],
-                    away_team=game.split("_")[-1],
+                    away_team=game.split("_")[2],
                     away_score=results[game]["away_score"]
                 )
             else:

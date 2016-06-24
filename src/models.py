@@ -66,7 +66,9 @@ class Prediction(db.Model):
     user = db.relationship("User", back_populates="predictions")
 
     def get_key(self):
-        return "{0}_{1}".format(self.home_team, self.away_team)
+        return "{0}_{1}_{2}".format(
+            self.matchday, self.home_team, self.away_team
+        )
 
     def get_value(self):
         return {
@@ -78,13 +80,16 @@ class Prediction(db.Model):
 class Result(db.Model):
     __tablename__ = "results"
 
+    matchday = db.Column(db.Integer, nullable=False, default=0)
     home_team = db.Column(db.String(100), primary_key=True, nullable=False)
     home_score = db.Column(db.Integer, nullable=False)
     away_team = db.Column(db.String(100), primary_key=True, nullable=False)
     away_score = db.Column(db.Integer, nullable=False)
 
     def get_key(self):
-        return "{0}_{1}".format(self.home_team, self.away_team)
+        return "{0}_{1}_{2}".format(
+            self.matchday, self.home_team, self.away_team
+        )
 
     def get_value(self):
         return {

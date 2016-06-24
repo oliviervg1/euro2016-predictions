@@ -44,7 +44,11 @@ class FootballDataApiClient(object):
         )
         response.raise_for_status()
         return {
-            "{}_{}".format(fixture["homeTeamName"], fixture["awayTeamName"]):
+            "{}_{}_{}".format(
+                fixture["matchday"],
+                fixture["homeTeamName"],
+                fixture["awayTeamName"]
+            ):
                 {
                     "home_score": fixture["result"]["goalsHomeTeam"],
                     "away_score": fixture["result"]["goalsAwayTeam"]
