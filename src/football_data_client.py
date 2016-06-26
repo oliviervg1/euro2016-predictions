@@ -43,19 +43,29 @@ class FootballDataApiClient(object):
             )
         )
         response.raise_for_status()
-        return {
-            "{}_{}_{}".format(
-                fixture["matchday"],
-                fixture["homeTeamName"],
-                fixture["awayTeamName"]
+        results = {}
+        for fixture in response.json()["fixtures"]:
+            if (
+                fixture["result"]["goalsHomeTeam"] is not None and
+                fixture["result"]["goalsAwayTeam"] is not None
             ):
-                {
-                    "home_score": fixture["result"]["goalsHomeTeam"],
-                    "away_score": fixture["result"]["goalsAwayTeam"]
-                }
-            for fixture in response.json()["fixtures"]
-            if fixture["result"]["goalsHomeTeam"] is not None and fixture["result"]["goalsAwayTeam"] is not None  # noqa
-        }
+                game = "{}_{}_{}".format(
+                    fixture["matchday"],
+                    fixture["homeTeamName"],
+                    fixture["awayTeamName"]
+                )
+                if fixture["result"].get("extraTime"):
+                    score = {
+                        "home_score": fixture["result"]["extraTime"]["goalsHomeTeam"],  # noqa
+                        "away_score": fixture["result"]["extraTime"]["goalsAwayTeam"]  # noqa
+                    }
+                else:
+                    score = {
+                        "home_score": fixture["result"]["goalsHomeTeam"],
+                        "away_score": fixture["result"]["goalsAwayTeam"]
+                    }
+                results[game] = score
+        return results
 
     def check_predictions_validity(self, predictions):
         fixtures = self.get_all_fixtures()
